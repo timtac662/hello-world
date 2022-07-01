@@ -4,13 +4,23 @@ version: 2.1
 
 commands:
     print_pipeline_id:
-      description: print out circle workflow ID
+      description: 
+      parameters:
+        to:
+          type: String
+          default: $CIRCLE_WORKFLOW_ID
       steps:
-        - run: echo << $CIRCLE_WORKFLOW_ID >>
+        - run: echo << parameter.to >>
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
+
+  new-job:
+    docker:
+      - image: cimg/node:18.4.0
+    steps:
+      - print_pipeline_id
   say-hello:
     # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
@@ -43,4 +53,4 @@ workflows:
       - save_hello_world_output
       - print_output_file:
           requires: [save_hello_world_output]
-      - print_pipeline_id
+      - new-job

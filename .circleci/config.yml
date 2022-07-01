@@ -5,8 +5,11 @@ version: 2.1
 commands:
     print_pipeline_id:
       description: using reuseable parameter.
+      parameters:
+          id:
+            type: String
       steps:
-        - run: echo $CIRCLE_WORKFLOW_ID
+        - run: echo << parameters.id >>
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
@@ -16,7 +19,8 @@ jobs:
     docker:
       - image: cimg/node:18.4.0
     steps:
-      - print_pipeline_id
+      - print_pipeline_id:
+          id: << pipeline.id >>
   say-hello:
     # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
